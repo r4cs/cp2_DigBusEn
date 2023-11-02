@@ -6,6 +6,7 @@ import br.com.digital.cp2.service.DepService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,14 +24,24 @@ public class DepController {
 
     @PostMapping
     @Transactional
-    public void cadastrar(@RequestBody @Valid DepartmentDTO dto) {
-        System.out.println("Dados departamento: " + dto);
-        service.cadastrar(dto);
+    public ResponseEntity<Object> cadastrar(@RequestBody @Valid DepartmentDTO dto) {
+        Optional<Department> departament = service.cadastrar(dto);
+        if (departament.isPresent()) {
+            return ResponseEntity.ok(departament);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping(value="/{id}")
-    public Optional<Department> lerDepPorId(@PathVariable Long id) {
-        return service.lerDepartamentoPorId(id);
+    public ResponseEntity<Object> lerDepPorId(@PathVariable Long id) {
+//        return service.lerDepartamentoPorId(id);
+        Optional<Department> department = service.lerDepartamentoPorId(id);
+        if (department.isPresent()) {
+            return ResponseEntity.ok(department);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping

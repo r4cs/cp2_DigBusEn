@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record EmployeeDTO(
+        Long id,
         String name,
         String title,
         BigDecimal salary,
@@ -16,6 +17,7 @@ public record EmployeeDTO(
 ) {
     public EmployeeDTO(Employee employee) {
         this(
+                employee.getId(),
                 employee.getName(),
                 employee.getTitle(),
                 employee.getSalary(),

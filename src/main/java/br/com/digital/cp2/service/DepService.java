@@ -19,9 +19,10 @@ public class DepService {
     }
 
 
-    public void cadastrar(DepartmentDTO dto) {
+    public Optional<Department> cadastrar(DepartmentDTO dto) {
         Department department = new Department(dto);
         repo.save(department);
+        return Optional.empty();
     }
 
     public Optional<Department> lerDepartamentoPorId(Long id) {
