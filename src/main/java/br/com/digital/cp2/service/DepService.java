@@ -3,6 +3,8 @@ package br.com.digital.cp2.service;
 import br.com.digital.cp2.entities.DTO.DepartmentDTO;
 import br.com.digital.cp2.entities.Department;
 import br.com.digital.cp2.repository.DepRepo;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +16,11 @@ public class DepService {
 
     private final DepRepo repo;
 
-    public DepService(@Autowired DepRepo repo) {
+    private final EntityManager entityManager;
+
+    public DepService(@Autowired DepRepo repo, EntityManager entityManager) {
         this.repo = repo;
+        this.entityManager = entityManager;
     }
 
 
@@ -52,5 +57,13 @@ public class DepService {
 
     public void deletarDep(Long id) {
         repo.deleteById(id);
+    }
+
+    public Department findDepartmentByName(String name) {
+        String sql = "SELECT d.name FROM tb_department d WHERE d.name = :name";
+        TypedQuery<Department> query = entityManager.createQuery(sql, Department.class);
+        query.setParameter("name", name);
+        List<Department> departments = query.getResultList();
+        return departments.isEmpty() ? null : departments.get(0);
     }
 }

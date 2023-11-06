@@ -5,9 +5,12 @@ import br.com.digital.cp2.entities.Department;
 import br.com.digital.cp2.entities.Employee;
 import br.com.digital.cp2.repository.DepRepo;
 import br.com.digital.cp2.repository.EmpRepo;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,9 +21,12 @@ public class EmpService {
     private final EmpRepo empRepo;
     private final DepRepo depRepo;
 
-    public EmpService(@Autowired EmpRepo empRepo, DepRepo depRepo) {
+    private final EntityManager entityManager;
+
+    public EmpService(@Autowired EmpRepo empRepo, DepRepo depRepo, EntityManager entityManager) {
         this.empRepo = empRepo;
         this.depRepo = depRepo;
+        this.entityManager = entityManager;
     }
 
 
@@ -100,5 +106,24 @@ public class EmpService {
 
     public void deletarEmp(Long id) {
         empRepo.deleteById(id);
+    }
+
+    public List<Employee> findEmployeesBySalaryRange(BigDecimal minSalary, BigDecimal maxSalary) {
+        String hql = "SELECT e.name, e.salary FROM tb_employee e WHERE e.salary >= :minSalary AND e.salary <= :maxSalary";
+        Query query = entityManager.createNativeQuery(hql);
+        query.setParameter("minSalary", minSalary);
+        query.setParameter("maxSalary", maxSalary);
+        return query.getResultList();
+    }
+
+
+    public List<Object[]> findAverageSalaryByDepartment(Long departmentId) {
+        String sql = "SELECT d.name, AVG(e.salary) FROM tb_employee e " +
+                "INNER JOIN tb_department d ON e.department = d.department_id " +
+                "WHERE d.department_id = :departmentId " +
+                "GROUP BY d.name";
+        Query query = entityManager.createNativeQuery(sql);
+        query.setParameter("departmentId", departmentId);
+        return query.getResultList();
     }
 }

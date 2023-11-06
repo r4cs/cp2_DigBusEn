@@ -35,13 +35,18 @@ public class DepController {
 
     @GetMapping(value="/{id}")
     public ResponseEntity<Object> lerDepPorId(@PathVariable Long id) {
-//        return service.lerDepartamentoPorId(id);
         Optional<Department> department = service.lerDepartamentoPorId(id);
         if (department.isPresent()) {
             return ResponseEntity.ok(department);
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping(value="/name/{name}")
+    public ResponseEntity<Object> getByName(@PathVariable String name) {
+        Department department = service.findDepartmentByName(name);
+        return ResponseEntity.ok(department);
     }
 
     @GetMapping

@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +37,18 @@ public class EmpController {
     @GetMapping
     public List<Employee> lerTdsEmp() {
         return service.lerTodosEmployees();
+    }
+
+    @GetMapping("/average-salary/{departmentId}")
+    public List<Object[]> findAverageSalaryByDepartment(@PathVariable Long departmentId) {
+        return service.findAverageSalaryByDepartment(departmentId);
+    }
+
+    @GetMapping("/salary-range/{minSalary}/{maxSalary}")
+    public List<Employee> findEmployeesBySalaryRange(
+            @PathVariable BigDecimal minSalary,
+            @PathVariable BigDecimal maxSalary) {
+        return service.findEmployeesBySalaryRange(minSalary, maxSalary);
     }
 
     @PatchMapping(value = "/{id}")
