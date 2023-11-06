@@ -12,8 +12,7 @@ public record EmployeeDTO(
         String title,
         BigDecimal salary,
         Employee manager,
-        Department department,
-        List<Employee> employeesManaged
+        Department department
 ) {
     public EmployeeDTO(Employee employee) {
         this(
@@ -22,8 +21,7 @@ public record EmployeeDTO(
                 employee.getTitle(),
                 employee.getSalary(),
                 employee.getManager(),
-                employee.getDepartment(),
-                employee.getEmployeesManaged()
+                employee.getDepartment()
         );
     }
 }

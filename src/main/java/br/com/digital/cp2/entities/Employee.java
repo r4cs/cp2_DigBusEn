@@ -5,12 +5,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
 @Setter
+@ToString
 @Entity(name = "employee")
 @Table(name = "tb_employee")
 public class Employee {
@@ -24,17 +27,14 @@ public class Employee {
     private String title;
     private BigDecimal salary;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "manager")
     @JsonIgnore
     private Employee manager;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "department")
     private Department department;
-
-    @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL)
-    private List<Employee> employeesManaged;
 
     public Employee() {
     }
@@ -45,17 +45,7 @@ public class Employee {
         this.salary = dto.salary();
         this.manager = dto.manager();
         this.department = dto.department();
-        this.employeesManaged = null;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + id + ", " +
-                "name = " + name + ", " +
-                "title = " + title + ", " +
-                "salary = " + salary + ", " +
-                "manager = " + manager + ", " +
-                "department = " + department + ")";
-    }
+
 }
